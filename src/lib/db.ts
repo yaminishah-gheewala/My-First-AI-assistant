@@ -1,30 +1,41 @@
-import Database from "better-sqlite3";
-import path from "path";
-import fs from "fs";
+import { Pool } from "pg";
 import { NUTRIENTS } from "./nutrients";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+const connectionString =
+  process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "No database connection string found. Set POSTGRES_URL (or DATABASE_URL) in your environment."
+  );
 }
-const DB_PATH = path.join(DATA_DIR, "app.db");
 
 declare global {
-  var __db: Database.Database | undefined;
+  var __pgPool: Pool | undefined;
+  var __schemaReady: Promise<void> | undefined;
 }
 
-function createDb(): Database.Database {
-  const db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
+const useSsl = !/localhost|127\.0\.0\.1/.test(connectionString);
 
-  db.exec(`
+export const pool =
+  globalThis.__pgPool ??
+  new Pool({
+    connectionString,
+    ssl: useSsl ? { rejectUnauthorized: false } : undefined,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.__pgPool = pool;
+}
+
+async function initSchema() {
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
       name TEXT NOT NULL,
       password_hash TEXT NOT NULL,
-      created_at TEXT NOT NULL
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
     CREATE TABLE IF NOT EXISTS lab_reports (
@@ -32,20 +43,20 @@ function createDb(): Database.Database {
       user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       report_date TEXT NOT NULL,
       note TEXT,
-      created_at TEXT NOT NULL
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
     CREATE TABLE IF NOT EXISTS lab_values (
       id TEXT PRIMARY KEY,
       report_id TEXT NOT NULL REFERENCES lab_reports(id) ON DELETE CASCADE,
       nutrient_key TEXT NOT NULL,
-      value REAL NOT NULL
+      value DOUBLE PRECISION NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS user_nutrient_settings (
       user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       nutrient_key TEXT NOT NULL,
-      enabled INTEGER NOT NULL DEFAULT 1,
+      enabled BOOLEAN NOT NULL DEFAULT TRUE,
       PRIMARY KEY (user_id, nutrient_key)
     );
 
@@ -54,39 +65,32 @@ function createDb(): Database.Database {
       user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       nutrient_key TEXT,
       title TEXT NOT NULL,
-      completed INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL
+      completed BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
     CREATE INDEX IF NOT EXISTS idx_reports_user ON lab_reports(user_id);
     CREATE INDEX IF NOT EXISTS idx_values_report ON lab_values(report_id);
     CREATE INDEX IF NOT EXISTS idx_goals_user ON goals(user_id);
   `);
-
-  return db;
 }
 
-export const db = globalThis.__db ?? createDb();
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__db = db;
+export function ready(): Promise<void> {
+  if (!globalThis.__schemaReady) {
+    globalThis.__schemaReady = initSchema();
+  }
+  return globalThis.__schemaReady;
 }
 
-const validKeys = new Set(NUTRIENTS.map((n) => n.key));
+const NUTRIENT_KEYS = NUTRIENTS.map((n) => n.key);
 
-export function ensureNutrientSettings(userId: string) {
-  const existing = db
-    .prepare(`SELECT nutrient_key FROM user_nutrient_settings WHERE user_id = ?`)
-    .all(userId) as { nutrient_key: string }[];
-  const existingKeys = new Set(existing.map((e) => e.nutrient_key));
-  const insert = db.prepare(
-    `INSERT INTO user_nutrient_settings (user_id, nutrient_key, enabled) VALUES (?, ?, 1)`
+export async function ensureNutrientSettings(userId: string) {
+  await ready();
+  const values = NUTRIENT_KEYS.map((_, i) => `($1, $${i + 2}, TRUE)`).join(", ");
+  await pool.query(
+    `INSERT INTO user_nutrient_settings (user_id, nutrient_key, enabled)
+     VALUES ${values}
+     ON CONFLICT (user_id, nutrient_key) DO NOTHING`,
+    [userId, ...NUTRIENT_KEYS]
   );
-  const tx = db.transaction(() => {
-    for (const key of validKeys) {
-      if (!existingKeys.has(key)) {
-        insert.run(userId, key);
-      }
-    }
-  });
-  tx();
 }

@@ -13,10 +13,10 @@ export default async function ReportDetailPage({
 }) {
   const { id } = await params;
   const session = await getSession();
-  const report = getReport(session!.userId, id);
+  const report = await getReport(session!.userId, id);
   if (!report) notFound();
 
-  const rows = getReportValues(report.id);
+  const rows = await getReportValues(report.id);
   const values: ReportResultValue[] = rows
     .map((row) => {
       const nutrient = NUTRIENT_MAP[row.nutrient_key];

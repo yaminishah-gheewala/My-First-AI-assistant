@@ -7,7 +7,7 @@ import { NUTRIENT_MAP } from "@/lib/nutrients";
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  return NextResponse.json({ settings: getUserNutrientSettings(session.userId) });
+  return NextResponse.json({ settings: await getUserNutrientSettings(session.userId) });
 }
 
 const schema = z.object({
@@ -28,6 +28,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Unknown nutrient" }, { status: 400 });
   }
 
-  setNutrientEnabled(session.userId, parsed.data.nutrientKey, parsed.data.enabled);
+  await setNutrientEnabled(session.userId, parsed.data.nutrientKey, parsed.data.enabled);
   return NextResponse.json({ ok: true });
 }

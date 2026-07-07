@@ -6,7 +6,7 @@ import { createGoal, listGoals } from "@/lib/goals";
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  return NextResponse.json({ goals: listGoals(session.userId) });
+  return NextResponse.json({ goals: await listGoals(session.userId) });
 }
 
 const schema = z.object({
@@ -24,6 +24,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const goal = createGoal(session.userId, parsed.data.title, parsed.data.nutrientKey);
+  const goal = await createGoal(session.userId, parsed.data.title, parsed.data.nutrientKey);
   return NextResponse.json({ goal });
 }

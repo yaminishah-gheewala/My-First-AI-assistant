@@ -21,16 +21,24 @@ explanations, dietary factors, and lifestyle goals for anything out of range.
 
 ```bash
 npm install
-cp .env.example .env.local   # then set SESSION_SECRET to a long random string
+cp .env.example .env.local   # then set SESSION_SECRET and DATABASE_URL
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Data is stored locally in a SQLite database at `data/app.db` (created
-automatically, git-ignored).
+Data is stored in Postgres. Point `DATABASE_URL` at any Postgres database
+(local, or a free hosted one like Neon/Vercel Postgres) — tables are created
+automatically on first run.
+
+## Deploying
+
+Deploy on [Vercel](https://vercel.com): import this repo, add a Postgres
+storage integration (Storage tab → Create Database) so `POSTGRES_URL` is set
+automatically, and set `SESSION_SECRET` to a long random string in the
+project's environment variables.
 
 ## Tech stack
 
-Next.js (App Router) + TypeScript, Tailwind CSS, better-sqlite3, jose (JWT
+Next.js (App Router) + TypeScript, Tailwind CSS, Postgres (`pg`), jose (JWT
 sessions), bcryptjs, recharts.

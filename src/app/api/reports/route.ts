@@ -7,7 +7,7 @@ import { NUTRIENT_MAP } from "@/lib/nutrients";
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  return NextResponse.json({ reports: listReports(session.userId) });
+  return NextResponse.json({ reports: await listReports(session.userId) });
 }
 
 const schema = z.object({
@@ -41,6 +41,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No valid lab values provided" }, { status: 400 });
   }
 
-  const report = createReport(session.userId, parsed.data.reportDate, parsed.data.note, values);
+  const report = await createReport(session.userId, parsed.data.reportDate, parsed.data.note, values);
   return NextResponse.json({ report });
 }

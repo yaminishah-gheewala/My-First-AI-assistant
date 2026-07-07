@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { db } from "./db";
+import { pool, ready } from "./db";
 
 export interface LabReport {
   id: string;
@@ -16,59 +16,81 @@ export interface LabValueRow {
   value: number;
 }
 
-export function createReport(
+export async function createReport(
   userId: string,
   reportDate: string,
   note: string | undefined,
   values: { key: string; value: number }[]
-): LabReport {
+): Promise<LabReport> {
+  await ready();
   const id = randomUUID();
-  const createdAt = new Date().toISOString();
-  const tx = db.transaction(() => {
-    db.prepare(
-      `INSERT INTO lab_reports (id, user_id, report_date, note, created_at) VALUES (?, ?, ?, ?, ?)`
-    ).run(id, userId, reportDate, note ?? null, createdAt);
-    const insertValue = db.prepare(
-      `INSERT INTO lab_values (id, report_id, nutrient_key, value) VALUES (?, ?, ?, ?)`
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      `INSERT INTO lab_reports (id, user_id, report_date, note) VALUES ($1, $2, $3, $4)`,
+      [id, userId, reportDate, note ?? null]
     );
     for (const v of values) {
-      insertValue.run(randomUUID(), id, v.key, v.value);
+      await client.query(
+        `INSERT INTO lab_values (id, report_id, nutrient_key, value) VALUES ($1, $2, $3, $4)`,
+        [randomUUID(), id, v.key, v.value]
+      );
     }
-  });
-  tx();
-  return db.prepare(`SELECT * FROM lab_reports WHERE id = ?`).get(id) as LabReport;
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
+  const { rows } = await pool.query<LabReport>(`SELECT * FROM lab_reports WHERE id = $1`, [id]);
+  return rows[0];
 }
 
-export function listReports(userId: string): LabReport[] {
-  return db
-    .prepare(`SELECT * FROM lab_reports WHERE user_id = ? ORDER BY report_date DESC, created_at DESC`)
-    .all(userId) as LabReport[];
+export async function listReports(userId: string): Promise<LabReport[]> {
+  await ready();
+  const { rows } = await pool.query<LabReport>(
+    `SELECT * FROM lab_reports WHERE user_id = $1 ORDER BY report_date DESC, created_at DESC`,
+    [userId]
+  );
+  return rows;
 }
 
-export function getReport(userId: string, reportId: string): LabReport | undefined {
-  return db
-    .prepare(`SELECT * FROM lab_reports WHERE id = ? AND user_id = ?`)
-    .get(reportId, userId) as LabReport | undefined;
+export async function getReport(userId: string, reportId: string): Promise<LabReport | undefined> {
+  await ready();
+  const { rows } = await pool.query<LabReport>(
+    `SELECT * FROM lab_reports WHERE id = $1 AND user_id = $2`,
+    [reportId, userId]
+  );
+  return rows[0];
 }
 
-export function getReportValues(reportId: string): LabValueRow[] {
-  return db
-    .prepare(`SELECT * FROM lab_values WHERE report_id = ?`)
-    .all(reportId) as LabValueRow[];
+export async function getReportValues(reportId: string): Promise<LabValueRow[]> {
+  await ready();
+  const { rows } = await pool.query<LabValueRow>(
+    `SELECT * FROM lab_values WHERE report_id = $1`,
+    [reportId]
+  );
+  return rows;
 }
 
-export function deleteReport(userId: string, reportId: string) {
-  db.prepare(`DELETE FROM lab_reports WHERE id = ? AND user_id = ?`).run(reportId, userId);
+export async function deleteReport(userId: string, reportId: string) {
+  await ready();
+  await pool.query(`DELETE FROM lab_reports WHERE id = $1 AND user_id = $2`, [reportId, userId]);
 }
 
-export function listAllValuesForUser(userId: string): (LabValueRow & { report_date: string })[] {
-  return db
-    .prepare(
-      `SELECT lv.*, lr.report_date as report_date
-       FROM lab_values lv
-       JOIN lab_reports lr ON lr.id = lv.report_id
-       WHERE lr.user_id = ?
-       ORDER BY lr.report_date ASC`
-    )
-    .all(userId) as (LabValueRow & { report_date: string })[];
+export async function listAllValuesForUser(
+  userId: string
+): Promise<(LabValueRow & { report_date: string })[]> {
+  await ready();
+  const { rows } = await pool.query<LabValueRow & { report_date: string }>(
+    `SELECT lv.*, lr.report_date as report_date
+     FROM lab_values lv
+     JOIN lab_reports lr ON lr.id = lv.report_id
+     WHERE lr.user_id = $1
+     ORDER BY lr.report_date ASC`,
+    [userId]
+  );
+  return rows;
 }

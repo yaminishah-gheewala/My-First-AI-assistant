@@ -5,8 +5,8 @@ import AccountPanel from "@/components/AccountPanel";
 
 export default async function AccountPage() {
   const session = await getSession();
-  const user = findUserById(session!.userId)!;
-  const settings = getUserNutrientSettings(session!.userId);
+  const user = (await findUserById(session!.userId))!;
+  const settings = await getUserNutrientSettings(session!.userId);
 
   return (
     <AccountPanel

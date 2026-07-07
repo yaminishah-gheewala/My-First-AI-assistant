@@ -5,7 +5,7 @@ import HealthTrendsView, { TrendPoint } from "@/components/HealthTrendsView";
 
 export default async function HealthTrendsPage() {
   const session = await getSession();
-  const rows = listAllValuesForUser(session!.userId);
+  const rows = await listAllValuesForUser(session!.userId);
 
   const byNutrient = new Map<string, TrendPoint[]>();
   for (const row of rows) {

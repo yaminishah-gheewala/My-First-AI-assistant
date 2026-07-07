@@ -6,17 +6,19 @@ import DeleteReportButton from "@/components/DeleteReportButton";
 
 export default async function ReportsPage() {
   const session = await getSession();
-  const reports = listReports(session!.userId);
+  const reports = await listReports(session!.userId);
 
-  const summaries = reports.map((report) => {
-    const values = getReportValues(report.id);
-    let outOfRange = 0;
-    for (const v of values) {
-      const nutrient = NUTRIENT_MAP[v.nutrient_key];
-      if (nutrient && getStatus(nutrient, v.value) !== "normal") outOfRange++;
-    }
-    return { report, count: values.length, outOfRange };
-  });
+  const summaries = await Promise.all(
+    reports.map(async (report) => {
+      const values = await getReportValues(report.id);
+      let outOfRange = 0;
+      for (const v of values) {
+        const nutrient = NUTRIENT_MAP[v.nutrient_key];
+        if (nutrient && getStatus(nutrient, v.value) !== "normal") outOfRange++;
+      }
+      return { report, count: values.length, outOfRange };
+    })
+  );
 
   return (
     <div className="space-y-6">

@@ -21,7 +21,7 @@ export async function PATCH(req: NextRequest) {
     );
   }
 
-  const user = findUserById(session.userId);
+  const user = await findUserById(session.userId);
   if (!user) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   const valid = await verifyPassword(parsed.data.currentPassword, user.password_hash);
@@ -50,7 +50,7 @@ export async function DELETE(req: NextRequest) {
     );
   }
 
-  const user = findUserById(session.userId);
+  const user = await findUserById(session.userId);
   if (!user) return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   const valid = await verifyPassword(parsed.data.password, user.password_hash);
@@ -58,7 +58,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Password is incorrect" }, { status: 400 });
   }
 
-  deleteUser(user.id);
+  await deleteUser(user.id);
   await clearAllAuthCookies();
   return NextResponse.json({ ok: true });
 }

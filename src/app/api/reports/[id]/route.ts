@@ -7,10 +7,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const { id } = await params;
-  const report = getReport(session.userId, id);
+  const report = await getReport(session.userId, id);
   if (!report) return NextResponse.json({ error: "Report not found" }, { status: 404 });
 
-  const values = getReportValues(report.id);
+  const values = await getReportValues(report.id);
   return NextResponse.json({ report, values });
 }
 
@@ -19,9 +19,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const { id } = await params;
-  const report = getReport(session.userId, id);
+  const report = await getReport(session.userId, id);
   if (!report) return NextResponse.json({ error: "Report not found" }, { status: 404 });
 
-  deleteReport(session.userId, id);
+  await deleteReport(session.userId, id);
   return NextResponse.json({ ok: true });
 }

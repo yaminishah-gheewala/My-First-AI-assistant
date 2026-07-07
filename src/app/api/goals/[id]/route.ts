@@ -14,7 +14,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!parsed.success) return NextResponse.json({ error: "Invalid input" }, { status: 400 });
 
   const { id } = await params;
-  setGoalCompleted(session.userId, id, parsed.data.completed);
+  await setGoalCompleted(session.userId, id, parsed.data.completed);
   return NextResponse.json({ ok: true });
 }
 
@@ -23,6 +23,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const { id } = await params;
-  deleteGoal(session.userId, id);
+  await deleteGoal(session.userId, id);
   return NextResponse.json({ ok: true });
 }
