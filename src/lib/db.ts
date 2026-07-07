@@ -4,19 +4,17 @@ import { NUTRIENTS } from "./nutrients";
 const connectionString =
   process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
 
-if (!connectionString) {
-  throw new Error(
-    "No database connection string found. Set POSTGRES_URL (or DATABASE_URL) in your environment."
-  );
-}
-
 declare global {
   var __pgPool: Pool | undefined;
   var __schemaReady: Promise<void> | undefined;
 }
 
-const useSsl = !/localhost|127\.0\.0\.1/.test(connectionString);
+const useSsl = !!connectionString && !/localhost|127\.0\.0\.1/.test(connectionString);
 
+// Pool construction is lazy (pg doesn't connect until a query runs), so this
+// must not throw at import time — Next.js imports this module while
+// building, before deploy-time environment variables like a database
+// connection string are necessarily available.
 export const pool =
   globalThis.__pgPool ??
   new Pool({
@@ -29,6 +27,11 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 async function initSchema() {
+  if (!connectionString) {
+    throw new Error(
+      "No database connection string found. Set POSTGRES_URL (or DATABASE_URL) in your environment, then redeploy."
+    );
+  }
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
