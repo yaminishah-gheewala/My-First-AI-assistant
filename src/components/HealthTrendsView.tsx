@@ -55,9 +55,9 @@ function TrendTooltip({
   const nutrient = NUTRIENT_MAP[nutrientKey];
   const status = getStatus(nutrient, point.value);
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-md text-sm">
-      <p className="text-slate-500 text-xs">{formatDate(point.date)}</p>
-      <p className="font-semibold text-slate-900">
+    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 shadow-md text-sm">
+      <p className="text-slate-500 dark:text-slate-400 text-xs">{formatDate(point.date)}</p>
+      <p className="font-semibold text-slate-900 dark:text-slate-100">
         {point.value} {nutrient.unit}
       </p>
       <span className={`inline-block mt-1 rounded-full px-2 py-0.5 text-xs font-semibold ${statusBadgeClasses(status)}`}>
@@ -76,16 +76,18 @@ function MiniSparkline({ series, onClick, active }: { series: Series; onClick: (
     <button
       onClick={onClick}
       className={`text-left rounded-xl border p-4 transition ${
-        active ? "border-emerald-400 ring-2 ring-emerald-100" : "border-slate-200 hover:border-slate-300"
-      } bg-white`}
+        active
+          ? "border-emerald-400 dark:border-emerald-600 ring-2 ring-emerald-100 dark:ring-emerald-900/50"
+          : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
+      } bg-white dark:bg-slate-800`}
     >
       <div className="flex items-center justify-between gap-2 mb-1">
-        <p className="text-sm font-medium text-slate-800 truncate">{nutrient.name}</p>
+        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{nutrient.name}</p>
         <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${statusBadgeClasses(status)}`}>
           {statusLabel(status)}
         </span>
       </div>
-      <p className="text-xs text-slate-400 mb-2">
+      <p className="text-xs text-slate-400 dark:text-slate-500 mb-2">
         {series.points.length} report{series.points.length === 1 ? "" : "s"} · latest {latest.value} {nutrient.unit}
       </p>
       {series.points.length > 1 ? (
@@ -104,7 +106,7 @@ function MiniSparkline({ series, onClick, active }: { series: Series; onClick: (
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="h-10 flex items-center text-xs text-slate-400">Add another report to see a trend</div>
+        <div className="h-10 flex items-center text-xs text-slate-400 dark:text-slate-500">Add another report to see a trend</div>
       )}
     </button>
   );
@@ -124,12 +126,12 @@ export default function HealthTrendsView({ series }: { series: Series[] }) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Health Trends</h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Health Trends</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Charts showing how your lab metrics change across report dates.
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 text-center text-sm text-slate-500 dark:text-slate-400">
           No submitted reports yet. Once you submit a lab report, trends will appear here.
         </div>
       </div>
@@ -139,18 +141,18 @@ export default function HealthTrendsView({ series }: { series: Series[] }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Health Trends</h1>
-        <p className="text-slate-500 text-sm mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Health Trends</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
           See how your lab metrics change across report dates. The shaded band is the normal
           range; dot color shows low (red), normal (green), or high (orange).
         </p>
       </div>
 
       {selected && nutrient && (
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <h2 className="font-semibold text-slate-900">{nutrient.name}</h2>
-            <span className="text-xs text-slate-400">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">{nutrient.name}</h2>
+            <span className="text-xs text-slate-400 dark:text-slate-500">
               Normal range: {nutrient.low}–{nutrient.high} {nutrient.unit}
             </span>
           </div>
@@ -191,7 +193,7 @@ export default function HealthTrendsView({ series }: { series: Series[] }) {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="rounded-lg bg-slate-50 p-6 text-center text-sm text-slate-500">
+            <div className="rounded-lg bg-slate-50 dark:bg-slate-900 p-6 text-center text-sm text-slate-500 dark:text-slate-400">
               You have one report with this value ({selected.points[0].value} {nutrient.unit}).
               Submit another report to start seeing a trend line.
             </div>
@@ -200,7 +202,7 @@ export default function HealthTrendsView({ series }: { series: Series[] }) {
       )}
 
       <div>
-        <h2 className="font-semibold text-slate-900 mb-3">All tracked metrics</h2>
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">All tracked metrics</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {sorted.map((s) => (
             <MiniSparkline

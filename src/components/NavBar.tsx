@@ -30,10 +30,10 @@ export default function NavBar({ name }: { name: string }) {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-slate-900">
+          <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-600 text-white text-sm">
               🩺
             </span>
@@ -49,8 +49,8 @@ export default function NavBar({ name }: { name: string }) {
                   href={l.href}
                   className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                     active
-                      ? "bg-emerald-50 text-emerald-700"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
                   }`}
                 >
                   {l.label}
@@ -60,18 +60,18 @@ export default function NavBar({ name }: { name: string }) {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <span className="text-sm text-slate-500">Hi, {name.split(" ")[0]}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">Hi, {name.split(" ")[0]}</span>
             <button
               onClick={logout}
               disabled={loggingOut}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition disabled:opacity-60"
+              className="rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition disabled:opacity-60"
             >
               {loggingOut ? "Logging out..." : "Log out"}
             </button>
           </div>
 
           <button
-            className="md:hidden rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+            className="md:hidden rounded-lg p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle menu"
           >
@@ -86,7 +86,7 @@ export default function NavBar({ name }: { name: string }) {
                 key={l.href}
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 {l.label}
               </Link>
@@ -94,7 +94,7 @@ export default function NavBar({ name }: { name: string }) {
             <button
               onClick={logout}
               disabled={loggingOut}
-              className="mt-1 rounded-lg border border-slate-300 px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-100"
+              className="mt-1 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-left text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               {loggingOut ? "Logging out..." : "Log out"}
             </button>

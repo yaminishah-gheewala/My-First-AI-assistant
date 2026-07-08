@@ -698,9 +698,9 @@ export function getStatus(nutrient: NutrientDef, value: number): LabStatus {
 }
 
 export function statusBadgeClasses(status: LabStatus): string {
-  if (status === "low") return "bg-red-100 text-red-700";
-  if (status === "high") return "bg-orange-100 text-orange-700";
-  return "bg-emerald-100 text-emerald-700";
+  if (status === "low") return "bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400";
+  if (status === "high") return "bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-400";
+  return "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400";
 }
 
 export function getStatusColor(status: LabStatus): string {

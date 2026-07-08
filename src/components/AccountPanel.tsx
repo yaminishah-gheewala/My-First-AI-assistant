@@ -3,6 +3,7 @@
 import { useState, useMemo, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { NUTRIENTS } from "@/lib/nutrients";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AccountPanel({
   name,
@@ -107,24 +108,30 @@ export default function AccountPanel({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">My Account</h1>
-        <p className="text-slate-500 text-sm mt-1">Manage your profile, security, and tracked nutrients.</p>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">My Account</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage your profile, security, and tracked nutrients.</p>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="font-semibold text-slate-900 mb-3">Account info</h2>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">Appearance</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose how Vital Signs Lab looks on this device.</p>
+        <ThemeToggle />
+      </div>
+
+      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">Account info</h2>
         <dl className="grid gap-3 sm:grid-cols-2 text-sm">
           <div>
-            <dt className="text-slate-500">Name</dt>
-            <dd className="text-slate-900 font-medium">{name}</dd>
+            <dt className="text-slate-500 dark:text-slate-400">Name</dt>
+            <dd className="text-slate-900 dark:text-slate-100 font-medium">{name}</dd>
           </div>
           <div>
-            <dt className="text-slate-500">Email</dt>
-            <dd className="text-slate-900 font-medium">{email}</dd>
+            <dt className="text-slate-500 dark:text-slate-400">Email</dt>
+            <dd className="text-slate-900 dark:text-slate-100 font-medium">{email}</dd>
           </div>
           <div>
-            <dt className="text-slate-500">Member since</dt>
-            <dd className="text-slate-900 font-medium">
+            <dt className="text-slate-500 dark:text-slate-400">Member since</dt>
+            <dd className="text-slate-900 dark:text-slate-100 font-medium">
               {new Date(memberSince).toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "long",
@@ -135,49 +142,49 @@ export default function AccountPanel({
         </dl>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="font-semibold text-slate-900 mb-3">Change password</h2>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">Change password</h2>
         <form onSubmit={changePassword} className="space-y-3 max-w-sm">
           {pwError && (
-            <div className="rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2">
+            <div className="rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 text-sm px-3 py-2">
               {pwError}
             </div>
           )}
           {pwSuccess && (
-            <div className="rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-3 py-2">
+            <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 text-sm px-3 py-2">
               {pwSuccess}
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Current password</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Current password</label>
             <input
               type="password"
               required
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">New password</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">New password</label>
             <input
               type="password"
               required
               minLength={8}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Confirm new password</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm new password</label>
             <input
               type="password"
               required
               minLength={8}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
           <button
@@ -190,14 +197,14 @@ export default function AccountPanel({
         </form>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
         <div className="flex items-baseline justify-between">
-          <h2 className="font-semibold text-slate-900 mb-1">Tracked nutrients</h2>
-          <span className="text-xs text-slate-400">
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Tracked nutrients</h2>
+          <span className="text-xs text-slate-400 dark:text-slate-500">
             {Object.values(settings).filter(Boolean).length} of {NUTRIENTS.length} enabled
           </span>
         </div>
-        <p className="text-sm text-slate-500 mb-4">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
           Turn off any nutrient your lab report doesn&apos;t include. Disabled nutrients are hidden
           from the analyzer.
         </p>
@@ -207,9 +214,9 @@ export default function AccountPanel({
             return (
               <label
                 key={n.key}
-                className="flex items-center justify-between gap-3 py-2 border-b border-slate-100 last:border-0 sm:border-0"
+                className="flex items-center justify-between gap-3 py-2 border-b border-slate-100 dark:border-slate-700 last:border-0 sm:border-0"
               >
-                <span className="text-sm text-slate-700">{n.name}</span>
+                <span className="text-sm text-slate-700 dark:text-slate-300">{n.name}</span>
                 <button
                   type="button"
                   role="switch"
@@ -217,7 +224,7 @@ export default function AccountPanel({
                   disabled={savingKey === n.key}
                   onClick={() => toggleNutrient(n.key)}
                   className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition ${
-                    enabled ? "bg-emerald-600" : "bg-slate-300"
+                    enabled ? "bg-emerald-600" : "bg-slate-300 dark:bg-slate-600"
                   } disabled:opacity-60`}
                 >
                   <span
@@ -232,35 +239,35 @@ export default function AccountPanel({
         </div>
       </div>
 
-      <div className="rounded-xl border border-red-200 bg-red-50 p-5">
-        <h2 className="font-semibold text-red-800 mb-1">Delete account</h2>
-        <p className="text-sm text-red-700 mb-3">
+      <div className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-5">
+        <h2 className="font-semibold text-red-800 dark:text-red-300 mb-1">Delete account</h2>
+        <p className="text-sm text-red-700 dark:text-red-400 mb-3">
           This permanently deletes your account, saved reports, goals, and settings. This cannot
           be undone.
         </p>
         {deleteError && (
-          <div className="rounded-lg bg-white border border-red-200 text-red-700 text-sm px-3 py-2 mb-3">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 text-sm px-3 py-2 mb-3">
             {deleteError}
           </div>
         )}
         {!confirmingDelete ? (
           <button
             onClick={() => setConfirmingDelete(true)}
-            className="rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100"
+            className="rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40"
           >
             Delete my account
           </button>
         ) : (
           <div className="max-w-sm space-y-3">
             <div>
-              <label className="block text-sm font-medium text-red-800 mb-1">
+              <label className="block text-sm font-medium text-red-800 dark:text-red-300 mb-1">
                 Enter your password to confirm
               </label>
               <input
                 type="password"
                 value={deletePassword}
                 onChange={(e) => setDeletePassword(e.target.value)}
-                className="w-full rounded-lg border border-red-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
             <div className="flex gap-2">
@@ -277,7 +284,7 @@ export default function AccountPanel({
                   setDeletePassword("");
                   setDeleteError(null);
                 }}
-                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                className="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Cancel
               </button>

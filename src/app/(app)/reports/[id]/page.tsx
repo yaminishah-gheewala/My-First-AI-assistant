@@ -28,10 +28,10 @@ export default async function ReportDetailPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/reports" className="text-sm text-emerald-700 hover:underline">
+          <Link href="/reports" className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline">
             ← Back to Saved Reports
           </Link>
-          <h1 className="text-2xl font-semibold text-slate-900 mt-1">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-1">
             {new Date(report.report_date + "T00:00:00").toLocaleDateString(undefined, {
               year: "numeric",
               month: "long",

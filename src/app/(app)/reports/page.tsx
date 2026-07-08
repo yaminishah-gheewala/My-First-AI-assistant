@@ -24,8 +24,8 @@ export default async function ReportsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Saved Reports</h1>
-          <p className="text-slate-500 text-sm mt-1">All the lab reports you&apos;ve submitted.</p>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Saved Reports</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">All the lab reports you&apos;ve submitted.</p>
         </div>
         <Link
           href="/dashboard"
@@ -36,9 +36,9 @@ export default async function ReportsPage() {
       </div>
 
       {summaries.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 text-center text-sm text-slate-500 dark:text-slate-400">
           You haven&apos;t submitted any reports yet.{" "}
-          <Link href="/dashboard" className="text-emerald-700 font-medium hover:underline">
+          <Link href="/dashboard" className="text-emerald-700 dark:text-emerald-400 font-medium hover:underline">
             Submit your first report
           </Link>
           .
@@ -46,24 +46,24 @@ export default async function ReportsPage() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {summaries.map(({ report, count, outOfRange }) => (
-            <div key={report.id} className="rounded-xl border border-slate-200 bg-white p-5 flex flex-col justify-between">
+            <div key={report.id} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 flex flex-col justify-between">
               <div>
-                <p className="font-semibold text-slate-900">
+                <p className="font-semibold text-slate-900 dark:text-slate-100">
                   {new Date(report.report_date + "T00:00:00").toLocaleDateString(undefined, {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
                 </p>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   {count} value{count === 1 ? "" : "s"} logged
                 </p>
                 {outOfRange > 0 ? (
-                  <span className="mt-2 inline-block rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                  <span className="mt-2 inline-block rounded-full bg-amber-100 dark:bg-amber-950/50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
                     {outOfRange} out of range
                   </span>
                 ) : (
-                  <span className="mt-2 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                  <span className="mt-2 inline-block rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                     All normal
                   </span>
                 )}
@@ -71,7 +71,7 @@ export default async function ReportsPage() {
               <div className="mt-4 flex items-center gap-2">
                 <Link
                   href={`/reports/${report.id}`}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                 >
                   View details
                 </Link>
