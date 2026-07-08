@@ -37,7 +37,7 @@ export default function NavBar({ name }: { name: string }) {
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-600 text-white text-sm">
               🩺
             </span>
-            <span className="hidden sm:inline">Vital Signs Lab</span>
+            <span className="hidden sm:inline">Health Nutrition Lab</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

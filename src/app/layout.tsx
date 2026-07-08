@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vital Signs Lab | Health & Nutrition Lab Analyzer",
+  title: "Health Nutrition Lab | Health & Nutrition Lab Analyzer",
   description: "Understand your blood test and nutrition lab results at a glance.",
 };
 

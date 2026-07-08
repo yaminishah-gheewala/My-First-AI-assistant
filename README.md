@@ -1,4 +1,4 @@
-# Vital Signs Lab — Personalized Health & Nutrition Lab Analyzer
+# Health Nutrition Lab — Personalized Health & Nutrition Lab Analyzer
 
 An interactive dashboard that demystifies blood test and nutrition lab results.
 Enter numbers from a lab report and see each value plotted on a color-coded

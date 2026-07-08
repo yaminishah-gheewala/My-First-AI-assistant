@@ -114,7 +114,7 @@ export default function AccountPanel({
 
       <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
         <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">Appearance</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose how Vital Signs Lab looks on this device.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose how Health Nutrition Lab looks on this device.</p>
         <ThemeToggle />
       </div>
 
