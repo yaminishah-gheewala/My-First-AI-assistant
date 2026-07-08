@@ -20,7 +20,7 @@ async function hasValidSession(req: NextRequest): Promise<boolean> {
   }
 }
 
-const PROTECTED_PREFIXES = ["/dashboard", "/reports", "/account", "/health-trends"];
+const PROTECTED_PREFIXES = ["/dashboard", "/reports", "/account", "/health-trends", "/goals"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -52,5 +52,14 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/signup", "/dashboard/:path*", "/reports/:path*", "/account/:path*", "/health-trends/:path*"],
+  matcher: [
+    "/",
+    "/login",
+    "/signup",
+    "/dashboard/:path*",
+    "/reports/:path*",
+    "/account/:path*",
+    "/health-trends/:path*",
+    "/goals/:path*",
+  ],
 };
